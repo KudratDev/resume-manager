@@ -18,13 +18,26 @@ STATE = "state"
 LANG = "lang"
 PHONE = "phone"
 RESUME_DATA = "resume"
+Q_IDX = "q_idx"
 
 S_LANG = "lang"
 S_CONTACT = "contact"
 S_MENU = "menu"
-S_QUESTION = "question"  # + index 0-6
+S_QUESTION = "question"
 S_PHONE_CONFIRM = "phone_confirm"
 S_PHONE_MANUAL = "phone_manual"
+
+RESUME_FIELD = {
+    0: "name",
+    1: "birthdate",
+    3: "experience",
+    4: "certificates",
+    5: "big_data_experience",
+    6: "memorable_project",
+    7: "preferred_job_type",
+}
+
+TOTAL_QUESTIONS = 7
 
 
 def _lang(ctx: ContextTypes.DEFAULT_TYPE) -> str:
@@ -40,6 +53,20 @@ async def _send(update: Update, text: str, keyboard=None):
     if keyboard is not None:
         kwargs["reply_markup"] = keyboard
     await update.message.reply_text(**kwargs)
+
+
+def _get_q_idx(ctx: ContextTypes.DEFAULT_TYPE) -> int:
+    return ctx.user_data.get(Q_IDX, 0)
+
+
+def _set_q_idx(ctx: ContextTypes.DEFAULT_TYPE, idx: int):
+    ctx.user_data[Q_IDX] = idx
+
+
+async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    ctx.user_data.clear()
+    ctx.user_data[STATE] = S_LANG
+    await _send(update, texts.CHOOSE_LANG, language_keyboard())
 
 
 async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -79,7 +106,9 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             resume["phone"] = ctx.user_data.get(PHONE, "")
             ctx.user_data[RESUME_DATA] = resume
             db.save_or_update_resume(chat_id, resume)
-            await _send_question(update, ctx, advance=True)
+            _set_q_idx(ctx, 3)
+            ctx.user_data[STATE] = S_QUESTION
+            await _ask_question(update, ctx)
         elif text in ("Yo'q", "Нет"):
             await _send(update, texts.ENTER_PHONE[lang])
             ctx.user_data[STATE] = S_PHONE_MANUAL
@@ -91,7 +120,9 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         ctx.user_data[RESUME_DATA] = resume
         ctx.user_data[PHONE] = text
         db.save_or_update_resume(chat_id, resume)
-        await _send_question(update, ctx, advance=True)
+        _set_q_idx(ctx, 3)
+        ctx.user_data[STATE] = S_QUESTION
+        await _ask_question(update, ctx)
         return
 
     if state == S_MENU:
@@ -101,8 +132,9 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
                 await _send(update, texts.BLOCKED)
             else:
                 ctx.user_data[RESUME_DATA] = {}
-                ctx.user_data[STATE] = f"{S_QUESTION}_0"
-                await _send_question(update, ctx)
+                _set_q_idx(ctx, 0)
+                ctx.user_data[STATE] = S_QUESTION
+                await _ask_question(update, ctx)
         elif text in ("Yuborilgan rezumelar", "Отправленные резюме"):
             resume = db.get_resume(chat_id)
             if resume:
@@ -117,87 +149,59 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             await _send(update, texts.CHOOSE_ACTION[lang], main_menu_keyboard(lang))
         return
 
-    if isinstance(state, str) and state.startswith(f"{S_QUESTION}_"):
-        await _handle_question_input(update, ctx, text)
+    if state == S_QUESTION:
+        await _handle_answer(update, ctx, text)
         return
 
+    ctx.user_data.clear()
     ctx.user_data[STATE] = S_LANG
     await _send(update, texts.CHOOSE_LANG, language_keyboard())
 
 
-RESUME_KEYS = [
-    "name",
-    "birthdate",
-    "experience",
-    "certificates",
-    "big_data_experience",
-    "memorable_project",
-    "preferred_job_type",
-]
-
-
-async def _handle_question_input(update: Update, ctx: ContextTypes.DEFAULT_TYPE, text: str):
-    state = ctx.user_data.get(STATE, f"{S_QUESTION}_0")
-    idx = int(state.split("_")[-1])
-    chat_id = update.message.chat_id
-    resume = ctx.user_data.get(RESUME_DATA, {})
-
-    if idx == 0:
-        resume["name"] = text
-    elif idx == 1:
-        resume["birthdate"] = text
-    elif idx >= 3:
-        key = RESUME_KEYS[idx - 1]  # shift because phone is at slot 2
-        resume[key] = text
-
-    ctx.user_data[RESUME_DATA] = resume
-    db.save_or_update_resume(chat_id, resume)
-
-    await _send_question(update, ctx, advance=True, current_idx=idx)
-
-
-async def _send_question(
-        update: Update,
-        ctx: ContextTypes.DEFAULT_TYPE,
-        advance: bool = False,
-        current_idx: int | None = None,
-):
-    state = ctx.user_data.get(STATE, f"{S_QUESTION}_0")
-    if current_idx is None:
-        current_idx = int(state.split("_")[-1]) if "_" in state else 0
-
-    next_idx = current_idx + 1 if advance else current_idx
+async def _ask_question(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """Отправить текущий вопрос по индексу Q_IDX."""
+    idx = _get_q_idx(ctx)
     lang = _lang(ctx)
     questions = _questions(ctx)
     chat_id = update.message.chat_id
 
-    if next_idx == 2:
+    if idx == 2:
         phone = ctx.user_data.get(PHONE, "")
         await _send(update, texts.PHONE_LABEL[lang] + phone)
         await _send(update, texts.PHONE_CONFIRM[lang], yes_no_keyboard(lang))
         ctx.user_data[STATE] = S_PHONE_CONFIRM
         return
 
-    if next_idx > len(questions):
+    if idx > TOTAL_QUESTIONS:
         resume = ctx.user_data.get(RESUME_DATA, {})
         db.save_or_update_resume(chat_id, resume)
         ctx.user_data[STATE] = S_MENU
         await _send(update, texts.RESUME_SAVED[lang], main_menu_keyboard(lang))
         return
 
-    q_idx = next_idx if next_idx < 2 else next_idx - 1
-    if q_idx >= len(questions):
+    q_pos = idx if idx < 2 else idx - 1
+    if q_pos >= len(questions):
         resume = ctx.user_data.get(RESUME_DATA, {})
         db.save_or_update_resume(chat_id, resume)
         ctx.user_data[STATE] = S_MENU
         await _send(update, texts.RESUME_SAVED[lang], main_menu_keyboard(lang))
         return
 
-    await _send(update, questions[q_idx])
-    ctx.user_data[STATE] = f"{S_QUESTION}_{next_idx}"
+    await _send(update, questions[q_pos])
 
 
-async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    ctx.user_data.clear()
-    ctx.user_data[STATE] = S_LANG
-    await _send(update, texts.CHOOSE_LANG, language_keyboard())
+async def _handle_answer(update: Update, ctx: ContextTypes.DEFAULT_TYPE, text: str):
+    """Сохранить ответ и перейти к следующему вопросу."""
+    idx = _get_q_idx(ctx)
+    chat_id = update.message.chat_id
+    resume = ctx.user_data.get(RESUME_DATA, {})
+
+    field = RESUME_FIELD.get(idx)
+    if field:
+        resume[field] = text
+        ctx.user_data[RESUME_DATA] = resume
+        db.save_or_update_resume(chat_id, resume)
+
+    next_idx = idx + 1
+    _set_q_idx(ctx, next_idx)
+    await _ask_question(update, ctx)
