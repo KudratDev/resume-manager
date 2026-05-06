@@ -30,27 +30,38 @@ def init_db():
     with db_cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS resume_blanc (
-                id          SERIAL PRIMARY KEY,
-                chat_id     BIGINT UNIQUE NOT NULL,
-                name        TEXT,
-                birthdate   TEXT,
-                phone       TEXT,
-                experience  TEXT,
+                id                  SERIAL PRIMARY KEY,
+                chat_id             BIGINT UNIQUE NOT NULL,
+                name                TEXT,
+                birthdate           TEXT,
+                phone               TEXT,
+                experience          TEXT,
                 certificates        TEXT,
                 big_data_experience TEXT,
                 memorable_project   TEXT,
                 preferred_job_type  TEXT,
-                updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+                updated_at          TIMESTAMP NOT NULL DEFAULT NOW()
             )
         """)
 
 
 def save_or_update_resume(chat_id: int, data: dict) -> None:
-    data["updated_at"] = datetime.now()
+    row = {
+        "chat_id": chat_id,
+        "name": data.get("name"),
+        "birthdate": data.get("birthdate"),
+        "phone": data.get("phone"),
+        "experience": data.get("experience"),
+        "certificates": data.get("certificates"),
+        "big_data_experience": data.get("big_data_experience"),
+        "memorable_project": data.get("memorable_project"),
+        "preferred_job_type": data.get("preferred_job_type"),
+        "updated_at": datetime.now(),
+    }
     with db_cursor() as cur:
         cur.execute("SELECT id FROM resume_blanc WHERE chat_id = %s", (chat_id,))
-        row = cur.fetchone()
-        if row:
+        exists = cur.fetchone()
+        if exists:
             cur.execute("""
                 UPDATE resume_blanc SET
                     name                = %(name)s,
@@ -63,7 +74,7 @@ def save_or_update_resume(chat_id: int, data: dict) -> None:
                     preferred_job_type  = %(preferred_job_type)s,
                     updated_at          = %(updated_at)s
                 WHERE chat_id = %(chat_id)s
-            """, {"chat_id": chat_id, **data})
+            """, row)
         else:
             cur.execute("""
                 INSERT INTO resume_blanc
@@ -74,7 +85,7 @@ def save_or_update_resume(chat_id: int, data: dict) -> None:
                     (%(chat_id)s, %(name)s, %(birthdate)s, %(phone)s, %(experience)s,
                      %(certificates)s, %(big_data_experience)s, %(memorable_project)s,
                      %(preferred_job_type)s, %(updated_at)s)
-            """, {"chat_id": chat_id, **data})
+            """, row)
 
 
 def get_resume(chat_id: int) -> dict | None:
