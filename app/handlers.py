@@ -128,7 +128,7 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     if state == S_MENU:
         lang = _lang(ctx)
-        if text in ("Resume yaratish", "Создать резюме"):
+        if text in ("Rezume yaratish", "Создать резюме"):
             if db.is_blocked(chat_id):
                 await _send(update, texts.BLOCKED)
             else:
