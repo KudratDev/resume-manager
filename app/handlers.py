@@ -9,6 +9,7 @@ from app.keyboards import (
     contact_keyboard,
     main_menu_keyboard,
     yes_no_keyboard,
+    remove_keyboard,
 )
 from app.config import QUESTIONS_UZ, QUESTIONS_RU
 
@@ -187,7 +188,7 @@ async def _ask_question(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await _send(update, texts.RESUME_SAVED[lang], main_menu_keyboard(lang))
         return
 
-    await _send(update, questions[q_pos])
+    await _send(update, questions[q_pos], remove_keyboard())
 
 
 async def _handle_answer(update: Update, ctx: ContextTypes.DEFAULT_TYPE, text: str):

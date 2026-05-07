@@ -21,7 +21,7 @@ def contact_keyboard(lang: str) -> ReplyKeyboardMarkup:
 
 def main_menu_keyboard(lang: str) -> ReplyKeyboardMarkup:
     if lang == "uz":
-        buttons = ["Resume yaratish", "Yuborilgan rezumelar", "Tilni qayta tanlash"]
+        buttons = ["Rezume yaratish", "Yuborilgan rezumelar", "Tilni qayta tanlash"]
     else:
         buttons = ["Создать резюме", "Отправленные резюме", "Выбрать язык заново"]
     return ReplyKeyboardMarkup([buttons], resize_keyboard=True)

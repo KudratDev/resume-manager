@@ -4,7 +4,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "8663926765:AAEVQ40hTjCsCqoO0nyY3_j2tQcgR5TQZ
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 QUESTIONS_UZ = [
-    "Familiya va ismingizni yozing",
+    "Familiya va ismingizni to'ldiring",
     "Tug'ilgan sana (kk/oo/yyyy)",
     "Java (spring) texnologiyasi bo'yicha ish tajribangiz (yillar)",
     "Dasturlash bo'yicha malaka oshirish sertifikatlariga egamisiz?",
