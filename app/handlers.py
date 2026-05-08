@@ -128,9 +128,13 @@ async def handle_message(update, ctx):
         else:
             await _send(update, texts.CHOOSE_LANG, language_keyboard())
             return
-        ctx.user_data[STATE] = S_CONTACT
         lang = _lang(ctx)
-        await _send(update, texts.SEND_CONTACT[lang], contact_keyboard(lang))
+        if ctx.user_data.get(PHONE):
+            ctx.user_data[STATE] = S_MENU
+            await _send(update, texts.CHOOSE_ACTION[lang], main_menu_keyboard(lang))
+        else:
+            ctx.user_data[STATE] = S_CONTACT
+            await _send(update, texts.SEND_CONTACT[lang], contact_keyboard(lang))
         return
 
     if state == S_PHONE_CONFIRM:
@@ -164,11 +168,10 @@ async def handle_message(update, ctx):
             if db.is_blocked(chat_id):
                 await _send(update, texts.BLOCKED)
             else:
-                # Шаг 1 — приветствие/меню уже было, показываем О компании или Вакансии
                 await _send(update, texts.MAIN_WELCOME[lang], main_menu_keyboard(lang))
         elif text in ("Haqida", "О компании"):
-            ctx.user_data[STATE] = S_ABOUT
-            await _send(update, texts.ABOUT_COMPANY[lang], start_keyboard(lang))
+            lang = _lang(ctx)
+            await _send(update, texts.ABOUT_COMPANY[lang], main_menu_keyboard(lang))
         elif text in ("Vakansiyalar", "Вакансии"):
             ctx.user_data[STATE] = S_INSTRUCTION
             await _send(update, texts.INSTRUCTION[lang], start_keyboard(lang))
@@ -179,8 +182,13 @@ async def handle_message(update, ctx):
             else:
                 await _send(update, texts.NO_RESUME[lang])
         elif text in ("Tilni qayta tanlash", "Выбрать язык заново"):
+            saved_phone = ctx.user_data.get(PHONE)
+            saved_resume = ctx.user_data.get(RESUME_DATA, {})
             ctx.user_data.clear()
             ctx.user_data[STATE] = S_LANG
+            if saved_phone:
+                ctx.user_data[PHONE] = saved_phone
+                ctx.user_data[RESUME_DATA] = saved_resume
             await _send(update, texts.CHOOSE_LANG, language_keyboard())
         else:
             await _send(update, texts.CHOOSE_ACTION[lang], main_menu_keyboard(lang))
@@ -188,8 +196,8 @@ async def handle_message(update, ctx):
 
     if state == S_ABOUT:
         lang = _lang(ctx)
-        ctx.user_data[STATE] = S_INSTRUCTION
-        await _send(update, texts.INSTRUCTION[lang], start_keyboard(lang))
+        ctx.user_data[STATE] = S_MENU
+        await _send(update, texts.CHOOSE_ACTION[lang], main_menu_keyboard(lang))
         return
 
     if state == S_INSTRUCTION:
