@@ -327,8 +327,16 @@ async def _handle_lang_level(update, ctx, text):
     lang_step = ctx.user_data.get(LANG_STEP, 0)
     chat_id = update.message.chat_id
     resume = ctx.user_data.get(RESUME_DATA, {})
-    langs_dict = resume.get("languages") or {}
-    if isinstance(langs_dict, str):
+
+    langs_raw = resume.get("languages")
+    if isinstance(langs_raw, str):
+        try:
+            langs_dict = json.loads(langs_raw)
+        except Exception:
+            langs_dict = {}
+    elif isinstance(langs_raw, dict):
+        langs_dict = langs_raw
+    else:
         langs_dict = {}
 
     lang_keys = ["russian", "uzbek", "english", "other"]
@@ -341,15 +349,9 @@ async def _handle_lang_level(update, ctx, text):
     if next_step < 4:
         ctx.user_data[LANG_STEP] = next_step
         lang_names = LANG_NAMES[lang]
-        await _send(update,
-                    language_level_keyboard(lang, lang_names[next_step]).keyboard[0][0],
-                    language_level_keyboard(lang, lang_names[next_step]))
-        q_text = f"[{lang_names[next_step]}]\n"
         level_label = "Darajani tanlang:" if lang == "uz" else "Выберите уровень:"
-        await update.message.reply_text(
-            q_text + level_label,
-            reply_markup=language_level_keyboard(lang, lang_names[next_step])
-        )
+        q_text = f"[{lang_names[next_step]}]\n{level_label}"
+        await _send(update, q_text, language_level_keyboard(lang, lang_names[next_step]))
     else:
         ctx.user_data[STATE] = S_QUESTION
         _set_q_idx(ctx, 6)
