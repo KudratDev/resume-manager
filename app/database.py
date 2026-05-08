@@ -1,4 +1,5 @@
 import os
+import json
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
@@ -56,6 +57,9 @@ def init_db():
 
 
 def save_or_update_resume(chat_id: int, data: dict) -> None:
+    languages = data.get("languages")
+    if isinstance(languages, dict):
+        languages = json.dumps(languages, ensure_ascii=False)
     row = {
         "chat_id": chat_id,
         "vacancy": data.get("vacancy"),
@@ -65,7 +69,7 @@ def save_or_update_resume(chat_id: int, data: dict) -> None:
         "education": data.get("education"),
         "gender": data.get("gender"),
         "marital_status": data.get("marital_status"),
-        "languages": data.get("languages"),
+        "languages": languages,
         "salary_expectation": data.get("salary_expectation"),
         "disability": data.get("disability"),
         "vacancy_source": data.get("vacancy_source"),

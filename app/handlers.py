@@ -1,4 +1,5 @@
 import logging
+import json
 
 from app import database as db
 from app import texts
@@ -309,7 +310,6 @@ async def _handle_answer(update, ctx, text):
     await _ask_question(update, ctx)
 
 
-# ─────────────────────────────────────────
 async def _handle_lang_level(update, ctx, text):
     lang = _lang(ctx)
     lang_step = ctx.user_data.get(LANG_STEP, 0)
@@ -321,7 +321,7 @@ async def _handle_lang_level(update, ctx, text):
 
     lang_keys = ["russian", "uzbek", "english", "other"]
     langs_dict[lang_keys[lang_step]] = text
-    resume["languages"] = langs_dict
+    resume["languages"] = json.dumps(langs_dict, ensure_ascii=False)
     ctx.user_data[RESUME_DATA] = resume
     db.save_or_update_resume(chat_id, resume)
 

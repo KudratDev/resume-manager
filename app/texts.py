@@ -1,3 +1,5 @@
+import json
+
 CHOOSE_LANG = "Iltimos, tilni tanlang \\ Пожалуйста, выберите язык:"
 
 SEND_CONTACT = {
@@ -158,29 +160,70 @@ def resume_text(resume: dict, lang: str) -> str:
         val = resume.get(key)
         return val if val else fallback
 
+    langs_raw = resume.get("languages")
+    if isinstance(langs_raw, str):
+        try:
+            langs_dict = json.loads(langs_raw)
+        except Exception:
+            langs_dict = {}
+    elif isinstance(langs_raw, dict):
+        langs_dict = langs_raw
+    else:
+        langs_dict = {}
+
     if lang == "uz":
         na = "Mavjud emas"
+        langs_str = (
+            f"RU: {langs_dict.get('russian', na)}, "
+            f"UZ: {langs_dict.get('uzbek', na)}, "
+            f"EN: {langs_dict.get('english', na)}, "
+            f"Boshqa: {langs_dict.get('other', na)}"
+        )
         return (
             "Sizning yuborilgan resume ma'lumotlaringiz:\n\n"
             f"Ism: {v('name', na)}\n"
             f"Tug'ilgan sana: {v('birthdate', na)}\n"
             f"Telefon: {v('phone', na)}\n"
-            f"Ish tajribasi: {v('experience', na)}\n"
+            f"Vakansiya: {v('vacancy', na)}\n"
+            f"Ta'lim: {v('education', na)}\n"
+            f"Jins: {v('gender', na)}\n"
+            f"Oilaviy holat: {v('marital_status', na)}\n"
+            f"Tillar: {langs_str}\n"
+            f"Kutilayotgan ish haqi: {v('salary_expectation', na)}\n"
+            f"Nogironlik: {v('disability', na)}\n"
+            f"Manba: {v('vacancy_source', na)}\n"
+            f"Ish tajribasi (Java): {v('experience', na)}\n"
             f"Sertifikatlar: {v('certificates', na)}\n"
-            f"Katta ma'lumotlar tajribasi: {v('big_data_experience', na)}\n"
-            f"Eng esda qolarli loyiha: {v('memorable_project', na)}\n"
-            f"Afzal ko'rilgan ish turi: {v('preferred_job_type', na)}"
+            f"Big Data tajribasi: {v('big_data_experience', na)}\n"
+            f"Eng yaxshi loyiha: {v('memorable_project', na)}\n"
+            f"Ish formati: {v('employment_format', na)}\n"
+            f"Ish turi: {v('employment_type', na)}"
         )
     else:
         na = "Нет данных"
+        langs_str = (
+            f"RU: {langs_dict.get('russian', na)}, "
+            f"UZ: {langs_dict.get('uzbek', na)}, "
+            f"EN: {langs_dict.get('english', na)}, "
+            f"Доп: {langs_dict.get('other', na)}"
+        )
         return (
             "Ваше отправленное резюме:\n\n"
             f"Имя: {v('name', na)}\n"
             f"Дата рождения: {v('birthdate', na)}\n"
             f"Телефон: {v('phone', na)}\n"
-            f"Опыт работы: {v('experience', na)}\n"
+            f"Вакансия: {v('vacancy', na)}\n"
+            f"Образование: {v('education', na)}\n"
+            f"Пол: {v('gender', na)}\n"
+            f"Семейное положение: {v('marital_status', na)}\n"
+            f"Языки: {langs_str}\n"
+            f"Ожидания по зарплате: {v('salary_expectation', na)}\n"
+            f"Инвалидность: {v('disability', na)}\n"
+            f"Источник: {v('vacancy_source', na)}\n"
+            f"Опыт Java Spring: {v('experience', na)}\n"
             f"Сертификаты: {v('certificates', na)}\n"
-            f"Опыт с большими данными: {v('big_data_experience', na)}\n"
-            f"Запоминающийся проект: {v('memorable_project', na)}\n"
-            f"Предпочитаемый тип работы: {v('preferred_job_type', na)}"
+            f"Опыт Big Data: {v('big_data_experience', na)}\n"
+            f"Лучший проект: {v('memorable_project', na)}\n"
+            f"Формат работы: {v('employment_format', na)}\n"
+            f"Тип занятости: {v('employment_type', na)}"
         )
