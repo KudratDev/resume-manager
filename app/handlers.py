@@ -274,7 +274,7 @@ async def _ask_question(update, ctx):
     elif idx == 7:
         await _send(update, q_text, yes_no_keyboard(lang))
     elif idx == 8:
-        await _send(update, q_text, vacancy_source_keyboard())
+        await _send(update, q_text, vacancy_source_keyboard(lang))
     elif idx == 10:
         await _send(update, q_text, yes_no_keyboard(lang))
     elif idx == 11:

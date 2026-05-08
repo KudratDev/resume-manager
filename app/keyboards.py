@@ -73,7 +73,7 @@ def gender_keyboard(lang: str) -> ReplyKeyboardMarkup:
 
 def marital_keyboard(lang: str) -> ReplyKeyboardMarkup:
     if lang == "uz":
-        buttons = ["Uylanган", "Turmushga chiqqan", "Bo'ydoq", "Ajrashgan"]
+        buttons = ["Uylanganman", "Turmushga chiqqanman", "Bo'ydoqman", "Ajrashganman"]
     else:
         buttons = ["Женат", "Замужем", "Холост", "Разведена"]
     return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
@@ -89,12 +89,19 @@ def language_level_keyboard(lang: str, language_name: str) -> ReplyKeyboardMarku
     return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
 
 
-def vacancy_source_keyboard() -> ReplyKeyboardMarkup:
-    return ReplyKeyboardMarkup(
-        [["LinkedIn", "hh.uz", "Telegram"],
-         ["Instagram", "Через знакомого", "Другое"]],
-        resize_keyboard=True,
-    )
+def vacancy_source_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        return ReplyKeyboardMarkup(
+            [["LinkedIn", "hh.uz", "Telegram"],
+             ["Instagram", "Tanishlar orqali", "Boshqa"]],
+            resize_keyboard=True,
+        )
+    else:
+        return ReplyKeyboardMarkup(
+            [["LinkedIn", "hh.uz", "Telegram"],
+             ["Instagram", "Через знакомого", "Другое"]],
+            resize_keyboard=True,
+        )
 
 
 def employment_format_keyboard(lang: str) -> ReplyKeyboardMarkup:

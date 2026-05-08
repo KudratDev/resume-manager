@@ -3,8 +3,8 @@ import json
 CHOOSE_LANG = "Iltimos, tilni tanlang \\ Пожалуйста, выберите язык:"
 
 SEND_CONTACT = {
-    "uz": "Iltimos, registratsiya uchun kontakt ma'lumotlaringizni yuboring:",
-    "ru": "Пожалуйста, отправьте ваши контактные данные для регистрации:",
+    "uz": "Ro'yxatdan o'tish uchun telefon raqamingizni yuboring:",
+    "ru": "Пожалуйста, отправьте ваш контакт для регистрации:",
 }
 
 CHOOSE_ACTION = {
@@ -12,11 +12,24 @@ CHOOSE_ACTION = {
     "ru": "Пожалуйста, выберите:",
 }
 
-BLOCKED = "Siz 2 daqiqa ichida boshqa harakat qilolmaysiz, iltimos, kuting."
+BLOCKED = {
+    "uz": "Siz allaqachon anketa to'ldirdingiz. Iltimos, keyinroq urinib ko'ring.",
+    "ru": "Вы уже заполнили анкету. Пожалуйста, повторите попытку позже.",
+}
 
 RESUME_SAVED = {
-    "uz": "Resume saqlandi!",
-    "ru": "Резюме сохранено!",
+    "uz": (
+        "✅ Rahmat!\n\n"
+        "Sizning anketangiz muvaffaqiyatli saqlandi.\n"
+        "HR mutaxassislarimiz tez orada siz bilan bog'lanadi.\n\n"
+        "Omad! 🍀"
+    ),
+    "ru": (
+        "✅ Благодарим вас!\n\n"
+        "Ваша анкета успешно сохранена.\n"
+        "Наш HR-специалист свяжется с вами в ближайшее время.\n\n"
+        "Удачи! 🍀"
+    ),
 }
 
 NO_RESUME = {
@@ -51,9 +64,9 @@ MAIN_WELCOME = {
 
 ABOUT_COMPANY = {
     "uz": (
-        "UrbanLab — urbanizatsiya, uy-joy va davlat xizmatlari raqamlashtirish "
+        "UrbanLab — urbanizatsiya, uy-joy va davlat xizmatlarini raqamlashtirish "
         "sohasida faoliyat yurituvchi tashkilot.\n\n"
-        "Biz Milliy Qo'mita tizimida ishlaydi va davlat uy-joy siyosatini amalga oshiradi."
+        "Biz Milliy Qo'mita tizimida faoliyat yuritamiz va davlat uy-joy siyosatini amalga oshiramiz."
     ),
     "ru": (
         "UrbanLab — организация, работающая в сфере цифровизации урбанизации, "
@@ -68,21 +81,19 @@ INSTRUCTION = {
         "Anketani to'ldirish bo'yicha ko'rsatma:\n\n"
         "Men sizga bir nechta savol beraman.\n"
         "Har biriga to'liq javob bering.\n"
-        "Oxirida tayyor rezyume HR-mutaxassislarimizga yuboriladi.\n\n"
-        "Boshlashga tayyormisiz?"
+        "Oxirida tayyor rezyume HR-mutaxassislarimizga yuboriladi."
     ),
     "ru": (
         "Инструкция по заполнению анкеты:\n\n"
         "Я задам вам ряд вопросов.\n"
         "Ответьте на каждый полностью.\n"
-        "В конце готовое резюме будет отправлено нашим HR-специалистам.\n\n"
-        "Готовы начать?"
+        "В конце готовое резюме будет отправлено нашим HR-специалистам."
     ),
 }
 
 CHOOSE_VACANCY = {
-    "uz": "Qaysi vakansiya sizni qiziqtiradi?",
-    "ru": "Какая вакансия вас интересует?",
+    "uz": "Qaysi vakansiya sizni qiziqtiradi?\n\nBatafsilroq ma'lumot olish uchun tanlang:",
+    "ru": "Какая вакансия вас интересует?\n\nВыберите для просмотра подробностей:",
 }
 
 VACANCY_DESC = {
