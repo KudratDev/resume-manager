@@ -22,13 +22,13 @@ def contact_keyboard(lang: str) -> ReplyKeyboardMarkup:
 def main_menu_keyboard(lang: str) -> ReplyKeyboardMarkup:
     if lang == "uz":
         buttons = [
-            ["Haqida", "Vakansiyalar"],
+            ["Biz haqimizda", "Vakansiyalar"],
             ["Yuborilgan rezumelar"],
             ["Tilni qayta tanlash"],
         ]
     else:
         buttons = [
-            ["О компании", "Вакансии"],
+            ["О нас", "Вакансии"],
             ["Отправленные резюме"],
             ["Выбрать язык заново"],
         ]

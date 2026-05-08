@@ -164,7 +164,7 @@ async def handle_message(update, ctx):
 
     if state == S_MENU:
         lang = _lang(ctx)
-        if text in ("Haqida", "О компании"):
+        if text in ("Biz haqimizda", "О нас"):
             lang = _lang(ctx)
             await _send(update, texts.ABOUT_COMPANY[lang], main_menu_keyboard(lang))
         elif text in ("Vakansiyalar", "Вакансии"):
