@@ -23,13 +23,13 @@ def main_menu_keyboard(lang: str) -> ReplyKeyboardMarkup:
     if lang == "uz":
         buttons = [
             ["Haqida", "Vakansiyalar"],
-            ["Rezume yaratish", "Yuborilgan rezumelar"],
+            ["Yuborilgan rezumelar"],
             ["Tilni qayta tanlash"],
         ]
     else:
         buttons = [
             ["О компании", "Вакансии"],
-            ["Создать резюме", "Отправленные резюме"],
+            ["Отправленные резюме"],
             ["Выбрать язык заново"],
         ]
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)

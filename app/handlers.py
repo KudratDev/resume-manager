@@ -164,17 +164,12 @@ async def handle_message(update, ctx):
 
     if state == S_MENU:
         lang = _lang(ctx)
-        if text in ("Rezume yaratish", "Создать резюме"):
-            if db.is_blocked(chat_id):
-                await _send(update, texts.BLOCKED)
-            else:
-                await _send(update, texts.MAIN_WELCOME[lang], main_menu_keyboard(lang))
-        elif text in ("Haqida", "О компании"):
+        if text in ("Haqida", "О компании"):
             lang = _lang(ctx)
             await _send(update, texts.ABOUT_COMPANY[lang], main_menu_keyboard(lang))
         elif text in ("Vakansiyalar", "Вакансии"):
-            ctx.user_data[STATE] = S_INSTRUCTION
-            await _send(update, texts.INSTRUCTION[lang], start_keyboard(lang))
+            ctx.user_data[STATE] = S_VACANCY
+            await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard())
         elif text in ("Yuborilgan rezumelar", "Отправленные резюме"):
             resume = db.get_resume(chat_id)
             if resume:
