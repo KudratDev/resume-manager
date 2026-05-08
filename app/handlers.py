@@ -169,7 +169,7 @@ async def handle_message(update, ctx):
             await _send(update, texts.ABOUT_COMPANY[lang], main_menu_keyboard(lang))
         elif text in ("Vakansiyalar", "Вакансии"):
             ctx.user_data[STATE] = S_VACANCY
-            await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard())
+            await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard(lang))
         elif text in ("Yuborilgan rezumelar", "Отправленные резюме"):
             resume = db.get_resume(chat_id)
             if resume:
