@@ -203,7 +203,11 @@ async def handle_message(update, ctx):
 
     if state == S_VACANCY:
         lang = _lang(ctx)
-        if text in ("Business Analyst", "GIS Analyst"):
+        back_labels = ["⬅️ Orqaga", "⬅️ Назад"]
+        if text in back_labels:
+            ctx.user_data[STATE] = S_MENU
+            await _send(update, texts.CHOOSE_ACTION[lang], main_menu_keyboard(lang))
+        elif text in ("Business Analyst", "GIS Analyst"):
             resume = ctx.user_data.get(RESUME_DATA, {})
             resume["vacancy"] = text
             ctx.user_data[RESUME_DATA] = resume
@@ -211,12 +215,17 @@ async def handle_message(update, ctx):
             desc = texts.VACANCY_DESC.get(text, {}).get(lang, "")
             await _send(update, desc, apply_keyboard(lang))
         else:
-            await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard())
+            await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard(lang))
         return
 
     if state == S_VACANCY_DESC:
+        lang = _lang(ctx)
+        back_labels = ["⬅️ Orqaga", "⬅️ Назад"]
         apply_labels = ["Ariza topshirish ✅", "Подать заявку ✅"]
-        if text in apply_labels:
+        if text in back_labels:
+            ctx.user_data[STATE] = S_VACANCY
+            await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard(lang))
+        elif text in apply_labels:
             ctx.user_data[RESUME_DATA] = ctx.user_data.get(RESUME_DATA, {})
             _set_q_idx(ctx, 0)
             ctx.user_data[STATE] = S_QUESTION

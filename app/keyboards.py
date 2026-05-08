@@ -47,11 +47,12 @@ def remove_keyboard() -> ReplyKeyboardRemove:
     return ReplyKeyboardRemove()
 
 
-def vacancy_keyboard() -> ReplyKeyboardMarkup:
-    return ReplyKeyboardMarkup(
-        [["Business Analyst", "GIS Analyst"]],
-        resize_keyboard=True,
-    )
+def vacancy_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        buttons = [["Business Analyst", "GIS Analyst"], ["⬅️ Orqaga"]]
+    else:
+        buttons = [["Business Analyst", "GIS Analyst"], ["⬅️ Назад"]]
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 
 
 def education_keyboard(lang: str) -> ReplyKeyboardMarkup:
@@ -119,7 +120,8 @@ def skip_keyboard(lang: str) -> ReplyKeyboardMarkup:
 
 def apply_keyboard(lang: str) -> ReplyKeyboardMarkup:
     label = "Ariza topshirish ✅" if lang == "uz" else "Подать заявку ✅"
-    return ReplyKeyboardMarkup([[label]], resize_keyboard=True)
+    back = "⬅️ Orqaga" if lang == "uz" else "⬅️ Назад"
+    return ReplyKeyboardMarkup([[label], [back]], resize_keyboard=True)
 
 
 def start_keyboard(lang: str) -> ReplyKeyboardMarkup:
