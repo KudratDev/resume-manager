@@ -21,10 +21,18 @@ def contact_keyboard(lang: str) -> ReplyKeyboardMarkup:
 
 def main_menu_keyboard(lang: str) -> ReplyKeyboardMarkup:
     if lang == "uz":
-        buttons = ["Rezume yaratish", "Yuborilgan rezumelar", "Tilni qayta tanlash"]
+        buttons = [
+            ["Haqida", "Vakansiyalar"],
+            ["Rezume yaratish", "Yuborilgan rezumelar"],
+            ["Tilni qayta tanlash"],
+        ]
     else:
-        buttons = ["Создать резюме", "Отправленные резюме", "Выбрать язык заново"]
-    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+        buttons = [
+            ["О компании", "Вакансии"],
+            ["Создать резюме", "Отправленные резюме"],
+            ["Выбрать язык заново"],
+        ]
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 
 
 def yes_no_keyboard(lang: str) -> ReplyKeyboardMarkup:
@@ -37,3 +45,83 @@ def yes_no_keyboard(lang: str) -> ReplyKeyboardMarkup:
 
 def remove_keyboard() -> ReplyKeyboardRemove:
     return ReplyKeyboardRemove()
+
+
+def vacancy_keyboard() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        [["Business Analyst", "GIS Analyst"]],
+        resize_keyboard=True,
+    )
+
+
+def education_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        buttons = ["O'rta-maxsus", "Oliy-tugallanmagan", "Oliy-tugallangan"]
+    else:
+        buttons = ["Средне-специальное", "Высшее-незаконченное", "Высшее-оконченное"]
+    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+
+
+def gender_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        buttons = [KeyboardButton("Erkak"), KeyboardButton("Ayol")]
+    else:
+        buttons = [KeyboardButton("Мужской"), KeyboardButton("Женский")]
+    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+
+
+def marital_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        buttons = ["Uylanган", "Turmushga chiqqan", "Bo'ydoq", "Ajrashgan"]
+    else:
+        buttons = ["Женат", "Замужем", "Холост", "Разведена"]
+    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+
+
+def language_level_keyboard(lang: str, language_name: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        prompt = f"{language_name} tili darajasi:"
+        buttons = ["O'rta", "O'rta-yuqori", "Yuqori"]
+    else:
+        prompt = f"Уровень {language_name}:"
+        buttons = ["Средний", "Средне-продвинутый", "Продвинутый"]
+    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+
+
+def vacancy_source_keyboard() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        [["LinkedIn", "hh.uz", "Telegram"],
+         ["Instagram", "Через знакомого", "Другое"]],
+        resize_keyboard=True,
+    )
+
+
+def employment_format_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        buttons = ["Qisqa muddatli loyihalar", "Uzoq muddatli ish"]
+    else:
+        buttons = ["Краткосрочные проекты", "Долгосрочная работа"]
+    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+
+
+def employment_type_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    if lang == "uz":
+        buttons = ["Loyiha asosida", "Doimiy"]
+    else:
+        buttons = ["Проектная", "Постоянная"]
+    return ReplyKeyboardMarkup([buttons], resize_keyboard=True)
+
+
+def skip_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    label = "O'tkazib yuborish ⏭" if lang == "uz" else "Пропустить ⏭"
+    return ReplyKeyboardMarkup([[label]], resize_keyboard=True)
+
+
+def apply_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    label = "Ariza topshirish ✅" if lang == "uz" else "Подать заявку ✅"
+    return ReplyKeyboardMarkup([[label]], resize_keyboard=True)
+
+
+def start_keyboard(lang: str) -> ReplyKeyboardMarkup:
+    label = "Boshlash" if lang == "uz" else "Начать"
+    return ReplyKeyboardMarkup([[label]], resize_keyboard=True)

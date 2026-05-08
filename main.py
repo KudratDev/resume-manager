@@ -20,7 +20,10 @@ def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", cmd_start))
-    app.add_handler(MessageHandler(filters.ALL, handle_message))
+    app.add_handler(MessageHandler(
+        filters.ALL & ~filters.COMMAND,
+        handle_message
+    ))
 
     app.run_polling(drop_pending_updates=True)
 

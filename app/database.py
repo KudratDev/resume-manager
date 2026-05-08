@@ -32,14 +32,24 @@ def init_db():
             CREATE TABLE IF NOT EXISTS resume_blanc (
                 id                  SERIAL PRIMARY KEY,
                 chat_id             BIGINT UNIQUE NOT NULL,
+                vacancy             TEXT,
                 name                TEXT,
                 birthdate           TEXT,
                 phone               TEXT,
+                education           TEXT,
+                gender              TEXT,
+                marital_status      TEXT,
+                languages           TEXT,
+                salary_expectation  TEXT,
+                disability          TEXT,
+                vacancy_source      TEXT,
                 experience          TEXT,
                 certificates        TEXT,
                 big_data_experience TEXT,
                 memorable_project   TEXT,
-                preferred_job_type  TEXT,
+                employment_format   TEXT,
+                cv_file_id          TEXT,
+                employment_type     TEXT,
                 updated_at          TIMESTAMP NOT NULL DEFAULT NOW()
             )
         """)
@@ -48,14 +58,24 @@ def init_db():
 def save_or_update_resume(chat_id: int, data: dict) -> None:
     row = {
         "chat_id": chat_id,
+        "vacancy": data.get("vacancy"),
         "name": data.get("name"),
         "birthdate": data.get("birthdate"),
         "phone": data.get("phone"),
+        "education": data.get("education"),
+        "gender": data.get("gender"),
+        "marital_status": data.get("marital_status"),
+        "languages": data.get("languages"),
+        "salary_expectation": data.get("salary_expectation"),
+        "disability": data.get("disability"),
+        "vacancy_source": data.get("vacancy_source"),
         "experience": data.get("experience"),
         "certificates": data.get("certificates"),
         "big_data_experience": data.get("big_data_experience"),
         "memorable_project": data.get("memorable_project"),
-        "preferred_job_type": data.get("preferred_job_type"),
+        "employment_format": data.get("employment_format"),
+        "cv_file_id": data.get("cv_file_id"),
+        "employment_type": data.get("employment_type"),
         "updated_at": datetime.now(),
     }
     with db_cursor() as cur:
@@ -64,27 +84,42 @@ def save_or_update_resume(chat_id: int, data: dict) -> None:
         if exists:
             cur.execute("""
                 UPDATE resume_blanc SET
+                    vacancy             = %(vacancy)s,
                     name                = %(name)s,
                     birthdate           = %(birthdate)s,
                     phone               = %(phone)s,
+                    education           = %(education)s,
+                    gender              = %(gender)s,
+                    marital_status      = %(marital_status)s,
+                    languages           = %(languages)s,
+                    salary_expectation  = %(salary_expectation)s,
+                    disability          = %(disability)s,
+                    vacancy_source      = %(vacancy_source)s,
                     experience          = %(experience)s,
                     certificates        = %(certificates)s,
                     big_data_experience = %(big_data_experience)s,
                     memorable_project   = %(memorable_project)s,
-                    preferred_job_type  = %(preferred_job_type)s,
+                    employment_format   = %(employment_format)s,
+                    cv_file_id          = %(cv_file_id)s,
+                    employment_type     = %(employment_type)s,
                     updated_at          = %(updated_at)s
                 WHERE chat_id = %(chat_id)s
             """, row)
         else:
             cur.execute("""
                 INSERT INTO resume_blanc
-                    (chat_id, name, birthdate, phone, experience,
-                     certificates, big_data_experience, memorable_project,
-                     preferred_job_type, updated_at)
+                    (chat_id, vacancy, name, birthdate, phone, education,
+                     gender, marital_status, languages, salary_expectation,
+                     disability, vacancy_source, experience, certificates,
+                     big_data_experience, memorable_project, employment_format,
+                     cv_file_id, employment_type, updated_at)
                 VALUES
-                    (%(chat_id)s, %(name)s, %(birthdate)s, %(phone)s, %(experience)s,
-                     %(certificates)s, %(big_data_experience)s, %(memorable_project)s,
-                     %(preferred_job_type)s, %(updated_at)s)
+                    (%(chat_id)s, %(vacancy)s, %(name)s, %(birthdate)s, %(phone)s,
+                     %(education)s, %(gender)s, %(marital_status)s, %(languages)s,
+                     %(salary_expectation)s, %(disability)s, %(vacancy_source)s,
+                     %(experience)s, %(certificates)s, %(big_data_experience)s,
+                     %(memorable_project)s, %(employment_format)s, %(cv_file_id)s,
+                     %(employment_type)s, %(updated_at)s)
             """, row)
 
 
