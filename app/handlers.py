@@ -198,7 +198,7 @@ async def handle_message(update, ctx):
     if state == S_INSTRUCTION:
         lang = _lang(ctx)
         ctx.user_data[STATE] = S_VACANCY
-        await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard())
+        await _send(update, texts.CHOOSE_VACANCY[lang], vacancy_keyboard(lang))
         return
 
     if state == S_VACANCY:
