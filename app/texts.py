@@ -42,9 +42,9 @@ PHONE_LABEL = {
     "ru": "Ваш номер телефона: ",
 }
 
-PHONE_CONFIRM = {
-    "uz": "Shu raqam bilan bog'lansak bo'ladimi?",
-    "ru": "Можем ли мы связаться с вами по этому номеру?",
+ENTER_PHONE = {
+    "uz": "Aloqa uchun telefon raqamingizni kiriting:\n(+998 bilan boshlang, masalan: +998901234567)",
+    "ru": "Введите номер телефона для связи:\n(начните с +998, например: +998901234567)",
 }
 
 ENTER_PHONE = {

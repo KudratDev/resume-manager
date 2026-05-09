@@ -1,5 +1,7 @@
 import logging
 import json
+import re
+from datetime import datetime as dt
 
 from app import database as db
 from app import texts
@@ -47,6 +49,28 @@ LANG_NAMES = {
     "uz": ["Rus tili", "O'zbek tili", "Ingliz tili", "Boshqa til"],
     "ru": ["Русский", "Узбекский", "Английский", "Дополнительный язык"],
 }
+
+
+def _validate_date(text: str) -> bool:
+    """Проверяет формат дд/мм/гггг и реальность даты."""
+    try:
+        parsed = dt.strptime(text.strip(), "%d/%m/%Y")
+        # Возраст от 16 до 80 лет
+        age = (dt.now() - parsed).days / 365
+        return 16 <= age <= 80
+    except ValueError:
+        return False
+
+
+def _validate_phone(text: str) -> bool:
+    """Только +998 + 9 цифр."""
+    return bool(re.fullmatch(r'\+998\d{9}', text.strip()))
+
+
+def _validate_salary(text: str) -> bool:
+    """Только цифры, допустимо пробелы и запятые как разделители."""
+    cleaned = text.strip().replace(" ", "").replace(",", "").replace(".", "")
+    return cleaned.isdigit() and int(cleaned) > 0
 
 
 def _lang(ctx):
@@ -152,12 +176,24 @@ async def handle_message(update, ctx):
         return
 
     if state == S_PHONE_MANUAL:
+        lang = _lang(ctx)
+        if not _validate_phone(text):
+            err = (
+                "❌ Noto'g'ri format.\n"
+                "Telefon raqami +998 bilan boshlanishi va 12 ta raqamdan iborат bo'lishi kerak.\n"
+                "Masalan: +998901234567"
+                if lang == "uz" else
+                "❌ Неверный формат.\n"
+                "Номер должен начинаться с +998 и содержать 12 цифр.\n"
+                "Например: +998901234567"
+            )
+            await _send(update, err)
+            return
         resume = ctx.user_data.get(RESUME_DATA, {})
         resume["phone"] = text
         ctx.user_data[PHONE] = text
         ctx.user_data[RESUME_DATA] = resume
         db.save_or_update_resume(chat_id, resume)
-        lang = _lang(ctx)
         ctx.user_data[STATE] = S_MENU
         await _send(update, texts.CHOOSE_ACTION[lang], main_menu_keyboard(lang))
         return
@@ -293,7 +329,32 @@ async def _ask_question(update, ctx):
 async def _handle_answer(update, ctx, text):
     idx = _get_q_idx(ctx)
     chat_id = update.message.chat_id
+    lang = _lang(ctx)
     resume = ctx.user_data.get(RESUME_DATA, {})
+
+    if idx == 1:
+        if not _validate_date(text):
+            err = (
+                "❌ Noto'g'ri format yoki sana.\n"
+                "Iltimos, to'g'ri kiriting: kk/oo/yyyy\n"
+                "Masalan: 15/03/1998"
+                if lang == "uz" else
+                "❌ Неверный формат или дата.\n"
+                "Пожалуйста, введите корректно: дд/мм/гггг\n"
+                "Например: 15/03/1998"
+            )
+            await _send(update, err)
+            return
+
+    if idx == 6:
+        if not _validate_salary(text):
+            err = (
+                "❌ Faqat raqam kiriting.\nMasalan: 5000000"
+                if lang == "uz" else
+                "❌ Введите только цифры.\nНапример: 5000000"
+            )
+            await _send(update, err)
+            return
 
     field_map = {
         0: "name",
