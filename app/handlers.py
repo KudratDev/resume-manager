@@ -332,6 +332,63 @@ async def _handle_answer(update, ctx, text):
     lang = _lang(ctx)
     resume = ctx.user_data.get(RESUME_DATA, {})
 
+    allowed = {
+        2: (
+            ["O'rta-maxsus", "Oliy-tugallanmagan", "Oliy-tugallangan"]
+            if lang == "uz" else
+            ["Средне-специальное", "Высшее-незаконченное", "Высшее-оконченное"]
+        ),
+        3: (
+            ["Erkak", "Ayol"]
+            if lang == "uz" else
+            ["Мужской", "Женский"]
+        ),
+        4: (
+            ["Uylanganman", "Turmushga chiqqanman", "Bo'ydoqman", "Ajrashganman"]
+            if lang == "uz" else
+            ["Женат", "Замужем", "Холост", "Разведена"]
+        ),
+        7: (
+            ["Ha", "Yo'q"]
+            if lang == "uz" else
+            ["Да", "Нет"]
+        ),
+        8: (
+            ["LinkedIn", "hh.uz", "Telegram", "Instagram", "Tanishlar orqali", "Boshqa"]
+            if lang == "uz" else
+            ["LinkedIn", "hh.uz", "Telegram", "Instagram", "Через знакомого", "Другое"]
+        ),
+        10: (
+            ["Ha", "Yo'q"]
+            if lang == "uz" else
+            ["Да", "Нет"]
+        ),
+        11: (
+            ["Ha", "Yo'q"]
+            if lang == "uz" else
+            ["Да", "Нет"]
+        ),
+        13: (
+            ["Qisqa muddatli loyihalar", "Uzoq muddatli ish"]
+            if lang == "uz" else
+            ["Краткосрочные проекты", "Долгосрочная работа"]
+        ),
+        15: (
+            ["Loyiha asosida", "Doimiy"]
+            if lang == "uz" else
+            ["Проектная", "Постоянная"]
+        ),
+    }
+
+    if idx in allowed and text not in allowed[idx]:
+        err = (
+            "❌ Iltimos, quyidagi tugmalardan birini tanlang."
+            if lang == "uz" else
+            "❌ Пожалуйста, выберите один из предложенных вариантов."
+        )
+        await _send(update, err)
+        return
+
     if idx == 1:
         if not _validate_date(text):
             err = (
@@ -342,6 +399,21 @@ async def _handle_answer(update, ctx, text):
                 "❌ Неверный формат или дата.\n"
                 "Пожалуйста, введите корректно: дд/мм/гггг\n"
                 "Например: 15/03/1998"
+            )
+            await _send(update, err)
+            return
+
+    if idx == 9:
+        cleaned = text.strip().replace(",", ".").replace(" ", "")
+        try:
+            val = float(cleaned)
+            if val < 0 or val > 50:
+                raise ValueError
+        except ValueError:
+            err = (
+                "❌ Faqat raqam kiriting (yillar soni).\nMasalan: 2"
+                if lang == "uz" else
+                "❌ Введите только число (количество лет).\nНапример: 2"
             )
             await _send(update, err)
             return
@@ -386,6 +458,21 @@ async def _handle_answer(update, ctx, text):
 async def _handle_lang_level(update, ctx, text):
     lang = _lang(ctx)
     lang_step = ctx.user_data.get(LANG_STEP, 0)
+
+    allowed_levels = (
+        ["O'rta", "O'rta-yuqori", "Yuqori"]
+        if lang == "uz" else
+        ["Средний", "Средне-продвинутый", "Продвинутый"]
+    )
+    if text not in allowed_levels:
+        err = (
+            "❌ Iltimos, quyidagi tugmalardan birini tanlang."
+            if lang == "uz" else
+            "❌ Пожалуйста, выберите один из предложенных вариантов."
+        )
+        await _send(update, err)
+        return
+
     chat_id = update.message.chat_id
     resume = ctx.user_data.get(RESUME_DATA, {})
 
