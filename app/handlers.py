@@ -131,9 +131,10 @@ async def handle_message(update, ctx):
             resume["cv_file_id"] = file_id or ""
             ctx.user_data[RESUME_DATA] = resume
             db.save_or_update_resume(chat_id, resume)
-            _set_q_idx(ctx, 15)
-            ctx.user_data[STATE] = S_QUESTION
-            await _ask_question(update, ctx)
+            resume = ctx.user_data.get(RESUME_DATA, {})
+            db.save_or_update_resume(chat_id, resume)
+            ctx.user_data[STATE] = S_MENU
+            await _send(update, texts.RESUME_SAVED[lang], main_menu_keyboard(lang))
         else:
             await _send(update, texts.SEND_CONTACT[lang])
         return
@@ -320,8 +321,6 @@ async def _ask_question(update, ctx):
     elif idx == 14:
         ctx.user_data[STATE] = S_CV_UPLOAD
         await _send(update, q_text, skip_keyboard(lang))
-    elif idx == 15:
-        await _send(update, q_text, employment_type_keyboard(lang))
     else:
         await _send(update, q_text, remove_keyboard())
 
@@ -441,8 +440,7 @@ async def _handle_answer(update, ctx, text):
         10: "certificates",
         11: "big_data_experience",
         12: "memorable_project",
-        13: "employment_format",
-        15: "employment_type",
+        13: "employment_format"
     }
 
     field = field_map.get(idx)

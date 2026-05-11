@@ -18,8 +18,7 @@ QUESTIONS_UZ = [
     "IT sohasida katta ma'lumotlar bilan ishlash tajribangiz bormi?",
     "Tajribangizdagi eng esda qolarli loyiha haqida aytib bering",
     "Qanday ish formatini afzal ko'rasiz?",
-    "CV faylingizni yuboring (ixtiyoriy)",
-    "Ish turini tanlang",
+    "CV faylingizni yuboring (ixtiyoriy)"
 ]
 
 QUESTIONS_RU = [
@@ -37,8 +36,7 @@ QUESTIONS_RU = [
     "Есть ли у вас опыт работы с Big Data?",
     "Расскажите кратко о вашем лучшем проекте",
     "Какой формат работы вам ближе?",
-    "Загрузите ваше CV (необязательно)",
-    "Укажите тип занятости",
+    "Загрузите ваше CV (необязательно)"
 ]
 
-TOTAL_QUESTIONS = 16
+TOTAL_QUESTIONS = 15

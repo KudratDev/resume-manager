@@ -207,7 +207,6 @@ def resume_text(resume: dict, lang: str) -> str:
             f"Big Data tajribasi: {v('big_data_experience', na)}\n"
             f"Eng yaxshi loyiha: {v('memorable_project', na)}\n"
             f"Ish formati: {v('employment_format', na)}\n"
-            f"Ish turi: {v('employment_type', na)}"
         )
     else:
         na = "Нет данных"
@@ -234,5 +233,4 @@ def resume_text(resume: dict, lang: str) -> str:
             f"Опыт Big Data: {v('big_data_experience', na)}\n"
             f"Лучший проект: {v('memorable_project', na)}\n"
             f"Формат работы: {v('employment_format', na)}\n"
-            f"Тип занятости: {v('employment_type', na)}"
         )
