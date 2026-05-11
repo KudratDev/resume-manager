@@ -92,8 +92,8 @@ INSTRUCTION = {
 }
 
 CHOOSE_VACANCY = {
-    "uz": "Qaysi vakansiya sizni qiziqtiradi?\n\nBatafsilroq ma'lumot olish uchun tanlang:",
-    "ru": "Какая вакансия вас интересует?\n\nВыберите для просмотра подробностей:",
+    "uz": "Qaysi vakansiya sizni qiziqtiradi?\n\nMa'lumotni ko'rish uchun quyidagini tanlang:",
+    "ru": "Какая вакансия вас интересует?\n\nВыберите для просмотра информации нижеследующие:",
 }
 
 VACANCY_DESC = {
@@ -188,7 +188,6 @@ def resume_text(resume: dict, lang: str) -> str:
             f"RU: {langs_dict.get('russian', na)}, "
             f"UZ: {langs_dict.get('uzbek', na)}, "
             f"EN: {langs_dict.get('english', na)}, "
-            f"Boshqa: {langs_dict.get('other', na)}"
         )
         return (
             "Sizning yuborilgan resume ma'lumotlaringiz:\n\n"
@@ -216,7 +215,6 @@ def resume_text(resume: dict, lang: str) -> str:
             f"RU: {langs_dict.get('russian', na)}, "
             f"UZ: {langs_dict.get('uzbek', na)}, "
             f"EN: {langs_dict.get('english', na)}, "
-            f"Доп: {langs_dict.get('other', na)}"
         )
         return (
             "Ваше отправленное резюме:\n\n"

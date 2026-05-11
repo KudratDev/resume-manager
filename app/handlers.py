@@ -46,8 +46,8 @@ RESUME_FIELD = {
 }
 
 LANG_NAMES = {
-    "uz": ["Rus tili", "O'zbek tili", "Ingliz tili", "Boshqa til"],
-    "ru": ["Русский", "Узбекский", "Английский", "Дополнительный язык"],
+    "uz": ["Rus tili", "O'zbek tili", "Ingliz tili"],
+    "ru": ["Русский", "Узбекский", "Английский"],
 }
 
 
@@ -487,14 +487,14 @@ async def _handle_lang_level(update, ctx, text):
     else:
         langs_dict = {}
 
-    lang_keys = ["russian", "uzbek", "english", "other"]
+    lang_keys = ["russian", "uzbek", "english"]
     langs_dict[lang_keys[lang_step]] = text
     resume["languages"] = json.dumps(langs_dict, ensure_ascii=False)
     ctx.user_data[RESUME_DATA] = resume
     db.save_or_update_resume(chat_id, resume)
 
     next_step = lang_step + 1
-    if next_step < 4:
+    if next_step < 3:
         ctx.user_data[LANG_STEP] = next_step
         lang_names = LANG_NAMES[lang]
         level_label = "Darajani tanlang:" if lang == "uz" else "Выберите уровень:"
