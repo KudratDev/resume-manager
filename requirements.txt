@@ -1,2 +1,7 @@
 python-telegram-bot==20.7
 psycopg2-binary==2.9.9
+pydantic
+fastapi
+python-jose
+passlib
+httpx
