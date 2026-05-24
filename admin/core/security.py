@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-
 from admin.core.config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRE_HOURS
 from admin.core.database import db_cursor
 

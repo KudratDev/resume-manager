@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-
 from admin.core.database import db_cursor
 from admin.core.security import get_current_user
 

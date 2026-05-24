@@ -1,6 +1,5 @@
 import logging
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from admin.core.security import get_current_user

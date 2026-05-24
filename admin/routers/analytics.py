@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-
 from admin.core.database import db_cursor
 
 router = APIRouter()

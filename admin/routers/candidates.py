@@ -1,14 +1,11 @@
 import json
 from typing import Optional
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
-
 from admin.core.database import db_cursor
 from admin.core.security import get_current_user
 
 router = APIRouter()
-
 VALID_STATUSES = {"new", "reviewing", "interview", "hired", "rejected"}
 
 

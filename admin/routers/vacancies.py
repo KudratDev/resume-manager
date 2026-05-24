@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-
 from admin.core.database import db_cursor
 
 router = APIRouter()
